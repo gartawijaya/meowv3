@@ -6,7 +6,7 @@ const readline = require('readline');
 
 class CatsAPI {
     constructor() {
-        this.baseURL = 'https://cats-backend-cxblew-prod.up.railway.app';
+        this.baseURL = 'https://api.catshouse.club';
     }
 
     headers(authorization) {
@@ -65,7 +65,7 @@ class CatsAPI {
     async waitWithCountdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
             readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`===== Completed all accounts, waiting ${i} seconds to continue the loop =====`);
+            process.stdout.write(`===== Đã hoàn thành tất cả tài khoản, chờ ${i} giây để tiếp tục vòng lặp =====`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         console.log('');
@@ -86,19 +86,19 @@ class CatsAPI {
                     const completeResponse = await Promise.race([completePromise, timeoutPromise]);
                     
                     if (completeResponse.data.success) {
-                        this.log(`Successfully completed task "${task.title}"`, 'success');
+                        this.log(`Làm nhiệm vụ "${task.title}" thành công`, 'success');
                     }
                 } catch (error) {
                     if (error.message === 'Task completion timed out') {
-                        this.log(`Task "${task.title}" timed out after 15 seconds`, 'warning');
+                        this.log(`Nhiệm vụ "${task.title}" bị timeout sau 15 giây`, 'warning');
                     } else {
-//                        this.log(`Error completing task "${task.title}": ${error.message}`, 'error');
+//                        this.log(`Lỗi khi làm nhiệm vụ "${task.title}": ${error.message}`, 'error');
                     }
                 }
             }
-            this.log(`All tasks completed, but some tasks couldn't be done!`, 'success');
+            this.log(`Đã làm hết các nhiệm vụ, có một số nhiệm vụ sẽ không làm được!`, 'success');
         } catch (error) {
-            this.log(`Error fetching tasks list: ${error.message}`, 'error');
+            this.log(`Lỗi khi lấy danh sách nhiệm vụ: ${error.message}`, 'error');
         }
     }
 
@@ -115,7 +115,7 @@ class CatsAPI {
 
                 const userInfoResponse = await this.getUserInfo(authorization);
                 const userInfo = userInfoResponse.data;
-                console.log(`========== Account ${no + 1} | ${userInfo.firstName} ==========`.green);
+                console.log(`========== Tài khoản ${no + 1} | ${userInfo.firstName} ==========`.green);
                 this.log(`Balance: ${userInfo.totalRewards}`);
                 this.log(`Ref code: ${userInfo.referrerCode}`);
 

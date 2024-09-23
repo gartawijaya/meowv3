@@ -7,7 +7,7 @@ const { HttpsProxyAgent } = require('https-proxy-agent');
 
 class CatsAPI {
     constructor() {
-        this.baseURL = 'https://cats-backend-cxblew-prod.up.railway.app';
+        this.baseURL = 'https://api.catshouse.club';
         this.proxies = fs.readFileSync('proxy.txt', 'utf8').replace(/\r/g, '').split('\n').filter(Boolean);
     }
 
@@ -62,10 +62,10 @@ class CatsAPI {
             if (response.status === 200) {
                 return response.data.ip;
             } else {
-                throw new Error(`Cannot check the proxy IP. Status code: ${response.status}`);
+                throw new Error(`Không thể kiểm tra IP của proxy. Status code: ${response.status}`);
             }
         } catch (error) {
-            throw new Error(`Error checking proxy IP: ${error.message}`);
+            throw new Error(`Error khi kiểm tra IP của proxy: ${error.message}`);
         }
     }
 
@@ -92,7 +92,7 @@ class CatsAPI {
     async waitWithCountdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
             readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`[*] Waiting ${i} seconds to continue...`);
+            process.stdout.write(`[*] Chờ ${i} giây để tiếp tục...`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         console.log('');
@@ -113,19 +113,19 @@ class CatsAPI {
                     const completeResponse = await Promise.race([completePromise, timeoutPromise]);
                     
                     if (completeResponse.data.success) {
-                        this.log(`Successfully completed task "${task.title}"`, 'success');
+                        this.log(`Làm nhiệm vụ "${task.title}" thành công`, 'success');
                     }
                 } catch (error) {
                     if (error.message === 'Task completion timed out') {
-                        this.log(`Task "${task.title}" timed out after 15 seconds`, 'warning');
+                        this.log(`Nhiệm vụ "${task.title}" bị timeout sau 15 giây`, 'warning');
                     } else {
-                        // this.log(`Error completing task "${task.title}": ${error.message}`, 'error');
+                        // this.log(`Lỗi khi làm nhiệm vụ "${task.title}": ${error.message}`, 'error');
                     }
                 }
             }
-            this.log(`All tasks completed, some tasks couldn't be done!`, 'success');
+            this.log(`Đã làm hết các nhiệm vụ, có một số nhiệm vụ sẽ không làm được!`, 'success');
         } catch (error) {
-            this.log(`Error fetching task list: ${error.message}`, 'error');
+            this.log(`Lỗi khi lấy danh sách nhiệm vụ: ${error.message}`, 'error');
         }
     }
 
@@ -145,20 +145,21 @@ class CatsAPI {
                 try {
                     proxyIP = await this.checkProxyIP(proxy);
                 } catch (error) {
-                    this.log(`Cannot check proxy IP: ${error.message}`, 'warning');
+                    this.log(`Không thể kiểm tra IP của proxy: ${error.message}`, 'warning');
                     continue;
                 }
 
                 try {
                     const userInfoResponse = await this.getUserInfo(authorization, proxy);
                     const userInfo = userInfoResponse.data;
-                    console.log(`========== Account ${no + 1} | ${userInfo.firstName} | ip: ${proxyIP} ==========`.green);
+                    console.log(`========== Tài khoản ${no + 1} | ${userInfo.firstName} | ip: ${proxyIP} ==========`.green);
                     this.log(`Balance: ${userInfo.totalRewards}`);
                     this.log(`Ref code: ${userInfo.referrerCode}`);
 
                     await this.completeTasks(authorization, proxy);
                 } catch (error) {
-                    this.log(`Error processing account: ${error.message}`, 'error');
+                    console.log(error);
+                    this.log(`Lỗi khi xử lý tài khoản: ${error.message}`, 'error');
                 }
             }
 
